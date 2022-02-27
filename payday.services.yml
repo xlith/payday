@@ -1,0 +1,3 @@
+services:
+  payday.calculate:
+    class: Drupal\payday\Calculate
