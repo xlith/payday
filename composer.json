@@ -1,0 +1,14 @@
+{
+    "name": "xlith/payday",
+    "description": "Provides salary and bonus pay dates for the rest of the year.",
+    "type": "drupal-custom-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Civan Yavuzsen",
+            "email": "civanyavuzsen@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}

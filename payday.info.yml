@@ -1,0 +1,7 @@
+name: Payday
+type: module
+description: Provides salary and bonus pay dates for the rest of the year.
+package: RTL
+core_version_requirement: ^9 || ^10
+dependencies:
+  - datetime

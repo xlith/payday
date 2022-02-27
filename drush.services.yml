@@ -1,0 +1,5 @@
+services:
+  payday.commands:
+    class: \Drupal\payday\Commands\PaydayCommands
+    tags:
+      - { name: drush.command }
