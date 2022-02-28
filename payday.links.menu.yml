@@ -1,6 +1,0 @@
-payday.settings_form:
-  title: 'Payday'
-  description: 'Configure Payday.'
-  parent: system.admin_config_system
-  route_name: payday.settings_form
-  weight: 10

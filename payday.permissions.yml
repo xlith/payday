@@ -1,4 +1,0 @@
-administer payday configuration:
-  title: 'Administer payday configuration'
-  description: 'Optional description.'
-  restrict access: true
