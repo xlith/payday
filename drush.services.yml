@@ -1,5 +1,6 @@
 services:
   payday.commands:
     class: \Drupal\payday\Commands\PaydayCommands
+    arguments: ['@payday.payday', '@payday.output']
     tags:
       - { name: drush.command }

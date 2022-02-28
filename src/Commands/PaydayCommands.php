@@ -2,69 +2,100 @@
 
 namespace Drupal\payday\Commands;
 
+use Carbon\Carbon;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\payday\Services\PaydayOutput;
+use Drupal\payday\Services\Payday;
 use Drush\Commands\DrushCommands;
 
 /**
- * A Drush commandfile.
- *
- * In addition to this file, you need a drush.services.yml
- * in root of your module, and a composer.json file that provides the name
- * of the services file to use.
- *
- * See these files for an example of injecting Drupal services:
- *   - http://cgit.drupalcode.org/devel/tree/src/Commands/DevelCommands.php
- *   - http://cgit.drupalcode.org/devel/tree/drush.services.yml
+ * Drush command file that provides drush terminal commands for payday module.
  */
 class PaydayCommands extends DrushCommands {
 
   /**
-   * Command description here.
+   * The payday.payday service.
    *
-   * @param $arg1
-   *   Argument description.
-   * @param array $options
-   *   An associative array of options whose values come from cli, aliases, config, etc.
-   * @option option-name
-   *   Description
-   * @usage payday-commandName foo
-   *   Usage description
-   *
-   * @command payday:commandName
-   * @aliases foo
+   * @var \Drupal\payday\Services\Payday
    */
-  public function commandName($arg1, $options = ['option-name' => 'default']) {
-    $this->logger()->success(dt('Achievement unlocked.'));
+  protected $payday;
+
+  /**
+   * The payday.output service.
+   *
+   * @var \Drupal\payday\Services\PaydayOutput
+   */
+  protected $paydayOutput;
+
+  /**
+   * Constructs a PaydayCommands object.
+   *
+   * @param \Drupal\payday\Services\Payday $payday
+   *   The payday.payday service.
+   * @param \Drupal\payday\Services\PaydayOutput $paydayOutput
+   *   The payday.output service.
+   */
+  public function __construct(Payday $payday, PaydayOutput $paydayOutput) {
+    parent::__construct();
+    $this->payday = $payday;
+    $this->paydayOutput = $paydayOutput;
   }
 
   /**
-   * An example of the table output format.
+   * Generate payday schedule until the end of this year.
    *
-   * @param array $options An associative array of options whose values come from cli, aliases, config, etc.
+   * @param string|null $filename
+   *   Filename for CSV file. (Write including the file extension.)
+   *   If this parameter is omitted output will be stdout.
    *
-   * @field-labels
-   *   group: Group
-   *   token: Token
-   *   name: Name
-   * @default-fields group,token,name
+   * @return string|null
+   *   Returns a csv string or null
    *
-   * @command payday:token
-   * @aliases token
+   * @usage drush payday:schedule schedule.csv
+   *   This will create the csv data and write it in a file named schedule.csv.
    *
-   * @filter-default-field name
-   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   * @usage drush payday:schedule
+   *   This will create a csv data and output to the stdout.
+   *
+   * @command payday:schedule
+   * @aliases pds
    */
-  public function token($options = ['format' => 'table']) {
-    $all = \Drupal::token()->getInfo();
-    foreach ($all['tokens'] as $group => $tokens) {
-      foreach ($tokens as $key => $token) {
-        $rows[] = [
-          'group' => $group,
-          'token' => $key,
-          'name' => $token['name'],
-        ];
-      }
+  public function schedule(string $filename = NULL): ?string {
+
+    $payDaySchedule = $this->payday->buildPayDaySchedule(Carbon::today());
+    $csvData = $this->paydayOutput->generateCsvFromPayMonths(["Salary", "Bonus"], $payDaySchedule);
+    if ($filename) {
+      $filename = $this->getConfig()->cwd() . '/' . $filename;
+      $this->paydayOutput->writeToFile($filename, $csvData);
+      $this->logger()->success(dt('Created file: ') . $filename);
+      return NULL;
     }
+    else {
+      return $csvData;
+    }
+  }
+
+  /**
+   * Outputs info about the payday module.
+   *
+   * @usage drush payday:info
+   *   Outputs info about the payday module.
+   *
+   * @command payday:info
+   * @aliases pdi
+   */
+  public function info(): RowsOfFields {
+    $content = file_get_contents(dirname(__FILE__) . '/../../composer.json');
+    $content = json_decode($content, TRUE);
+    $rows = [
+      ['Package Name', $content['name']],
+      ['Description', $content['description']],
+      ['Package License', $content['license']],
+      ['Author Name', $content['authors'][0]['name']],
+      ['Author Email', $content['authors'][0]['email']],
+    ];
+
     return new RowsOfFields($rows);
   }
+
 }
