@@ -9,10 +9,10 @@
             "email": "civanyavuzsen@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
         "ext-json": "*",
-        "nesbot/carbon": "3.x-dev",
-        "drush/drush": "11.x-dev"
+        "nesbot/carbon": "^2.57",
+        "drush/drush": "^11.0"
     }
 }
