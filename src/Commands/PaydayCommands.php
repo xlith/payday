@@ -61,9 +61,8 @@ class PaydayCommands extends DrushCommands {
    * @aliases pds
    */
   public function schedule(string $filename = NULL): ?string {
-
     $payDaySchedule = $this->payday->buildPayDaySchedule(Carbon::today());
-    $csvData = $this->paydayOutput->generateCsvFromPayMonths(["Salary", "Bonus"], $payDaySchedule);
+    $csvData = $this->paydayOutput->generateCsvFromPayMonths(["salary", "bonus"], $payDaySchedule);
     if ($filename) {
       $filename = $this->getConfig()->cwd() . '/' . $filename;
       $this->paydayOutput->writeToFile($filename, $csvData);
