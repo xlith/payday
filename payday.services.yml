@@ -1,3 +1,6 @@
 services:
-  payday.calculate:
-    class: Drupal\payday\Calculate
+  payday.output:
+    class: Drupal\payday\Services\PaydayOutput
+
+  payday.payday:
+    class: Drupal\payday\Services\Payday
