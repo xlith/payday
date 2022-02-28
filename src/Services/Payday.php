@@ -14,13 +14,13 @@ class Payday {
   /**
    * Returns an array that contains {@link \Drupal\payday\PayMonthItem}'s.
    *
-   * @param \Carbon\Carbon $startDay
+   * @param \Carbon\Carbon $startDate
    *   The date to start the calculations.
    *
    * @return array
    *   Array of {@link \Drupal\payday\PayMonthItem}'s
    */
-  public function buildPayDaySchedule(Carbon $startDay): array {
+  public function buildPayDaySchedule(Carbon $startDate): array {
 
     // Closure for salary pay date calculation.
     $calculateSalaryPayDate = function (Carbon $date) {
@@ -60,8 +60,8 @@ class Payday {
 
     // Array loop to create the schedule array that contains
     // all the validations and the results together.
-    for ($payMonthNumber = $startDay->month; $payMonthNumber <= 12; $payMonthNumber++) {
-      $payMonthDate = Carbon::create($startDay->year, $payMonthNumber);
+    for ($payMonthNumber = $startDate->month; $payMonthNumber <= 12; $payMonthNumber++) {
+      $payMonthDate = Carbon::create($startDate->year, $payMonthNumber);
       $payMonth = new PayMonthItem($payMonthDate);
       $payMonth->createPayDay("salary", $payMonth->monthDate, $calculateSalaryPayDate, [$salaryPayDayValidation]);
       $payMonth->createPayDay("bonus", $payMonth->monthDate, $calculateBonusPayDate, [$bonusPayDayValidation]);
