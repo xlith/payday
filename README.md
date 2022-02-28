@@ -18,6 +18,7 @@ This module integrates with [Drush](https://www.drush.org/) and creates a new dr
 
 ```shell
 $ composer require xlith/payday
+$ drush pm-enable payday
 ```
 
 ## USAGE
